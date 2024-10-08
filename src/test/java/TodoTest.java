@@ -626,7 +626,531 @@ public class TodoTest extends ApiTest{
     }
 
     // ----------------------- /todos/:id/categories -----------------------
+
+    /**
+     * DOCUMENTED
+     * Test GET /todos/:id/categories
+     * Input: path variable id
+     * Expected: 200 OK with "categories" list related to todo with id 
+     */
+    @Test
+    public void test_get_todos_id_categories_200() throws IOException, InterruptedException {
+        String id = "1";
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories", id)))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(200, response.statusCode());
+
+        // Check if response body is in JSON and contains list of todos
+        assertNotNull(response.body());
+        JsonNode jsonResponse = objectMapper.readTree(response.body());
+        JsonNode responsetodos = jsonResponse.get("categories");
+        assertTrue(responsetodos.isArray());
+    }
+
+    /**
+     * UNDOCUMENTED
+     * Test PUT /todos/:id/categories
+     * Input: path variable id, request body with category id
+     * Expected: 405 Method Not Allowed
+     */
+    @Test
+    public void test_put_todos_id_categories_405() throws IOException, InterruptedException {
+        String id = "1";
+
+        // Category to be edited
+        Map<String, String> category = new HashMap<>() {{
+            put("id", "1");
+        }};
+        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(category));
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories", id)))
+                .PUT(requestBody)
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(405, response.statusCode());
+    }
+
+    /**
+     * DOCUMENTED
+     * Test POST /todos/:id/categories
+     * Input: path variable id, request body with category id
+     * Expected: 201 Created
+     */
+    @Test
+    public void test_post_todos_id_categories_201() throws IOException, InterruptedException {
+        String id = "1";
+
+        // Category to be edited
+        Map<String, String> category = new HashMap<>() {{
+            put("id", "1");
+        }};
+        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(category));
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories", id)))
+                .POST(requestBody)
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(201, response.statusCode());
+    }
+
+    /**
+     * DOCUMENTED
+     * Test POST /todos/:id/categories
+     * Input: path variable id, request body with invalid field
+     * Expected: 400 Bad Request with error message
+     */
+    @Test
+    public void test_post_todos_id_categories_400() throws IOException, InterruptedException {
+        String id = "1";
+
+        // Category to be edited
+        Map<String, String> category = new HashMap<>() {{
+            put("name", "category1");
+        }};
+        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(category));
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories", id)))
+                .POST(requestBody)
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(400, response.statusCode());
+
+        // Validate content of response body with request body
+        validateErrorMessage(objectMapper, response);
+    }
+
+    /**
+     * UNDOCUMENTED
+     * Test POST /todos/:id/categories
+     * Input: path variable id, request body with invalid category id
+     * Unexpected: 404 Not Found with error message
+     */
+    @Test
+    public void test_post_todos_id_categories_404() throws IOException, InterruptedException {
+        String id = "1";
+
+        // Category to be edited
+        Map<String, String> category = new HashMap<>() {{
+            put("id", "10");
+        }};
+        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(category));
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories", id)))
+                .POST(requestBody)
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(404, response.statusCode());
+
+        // Validate content of response body with request body
+        validateErrorMessage(objectMapper, response);
+    }
+
+    /**
+     * UNDOCUMENTED
+     * Test DELETE /todos/:id/categories
+     * Input: path variable id
+     * Expected: 405 Method Not Allowed
+     */
+    @Test
+    public void test_delete_todos_id_categories_405() throws IOException, InterruptedException {
+        String id = "1";
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories", id)))
+                .DELETE()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(405, response.statusCode());
+    }
+
+    /**
+     * UNDOCUMENTED
+     * Test OPTIONS /todos/:id/categories
+     * Input: path variable id
+     * Expected: 200 OK with endpoint options
+     */
+    @Test
+    public void test_option_todos_id_categories_200() throws IOException, InterruptedException {
+        String id = "1";
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories", id)))
+                .method("OPTIONS", HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(200, response.statusCode());
+
+        // Get the headers from the response
+        Map<String, List<String>> headers = response.headers().map();
+        List<String> options = Arrays.asList(headers.get("Allow").get(0).split(",\\s*"));
+        assertTrue(options.containsAll(Arrays.asList("OPTIONS", "GET", "HEAD", "POST")));
+    }
+
+    /**
+     * DOCUMENTED
+     * Test HEAD /todos/:id/categories
+     * Input: path variable id
+     * Expected: 200 OK, returning headers
+     */
+    @Test
+    public void test_head_todos_id_categories_200() throws IOException, InterruptedException {
+        String id = "1";
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories", id)))
+                .method("HEAD", HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(200, response.statusCode());
+
+        // Get the headers from the response
+        Map<String, List<String>> headers = response.headers().map();
+        assertFalse(headers.isEmpty());
+    }
+
+    /**
+     * UNDOCUMENTED
+     * Test PATCH /todos/:id/categories
+     * Input: path variable id
+     * Expected: 405 Method Not Allowed
+     */
+    @Test
+    public void test_patch_todos_id_categories_405() throws IOException, InterruptedException {
+        String id = "1";
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories", id)))
+                .method("PATCH", HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(405, response.statusCode());
+    }
+
     // ----------------------- /todos/:id/categories/:id -----------------------
+
+    /**
+     * UNDOCUMENTED
+     * Test GET /todos/:id/categories/:id
+     * Input: path variable id for todo and id for category
+     * Expected: 405 Method Not Allowed
+     */
+    @Test
+    public void test_get_todos_id_categories_id_405() throws IOException, InterruptedException {
+        String todo_id = "1";
+        String category_id = "1";
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories/%s", todo_id, category_id)))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertNotEquals(405, response.statusCode(), "Expected status code 405 but received " + response.statusCode());
+    }
+
+    /**
+     * UNDOCUMENTED
+     * Test GET /todos/:id/categories/:id
+     * Input: path variable id for todo and id for category
+     * Actual: 404 Not Found
+     */
+    @Test
+    public void test_get_todos_id_categories_id_404() throws IOException, InterruptedException {
+        String todo_id = "1";
+        String category_id = "1";
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories/%s", todo_id, category_id)))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(404, response.statusCode());
+    }
+
+    /**
+     * UNDOCUMENTED
+     * Test PUT /todos/:id/categories/:id
+     * Input: path variable id for todo and id for category
+     * Expected: 405 Method Not Allowed
+     */
+    @Test
+    public void test_put_todos_id_categories_id_405() throws IOException, InterruptedException {
+        String todo_id = "1";
+        String category_id = "1";
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories/%s", todo_id, category_id)))
+                .PUT(HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(405, response.statusCode());
+    }
+
+    /**
+     * UNDOCUMENTED
+     * Test POST /todos/:id/categories/:id
+     * Input: path variable id for todo and id for category
+     * Expected: 405 Method Not Allowed
+     */
+    @Test
+    public void test_post_todos_id_categories_id_405() throws IOException, InterruptedException {
+        String todo_id = "1";
+        String category_id = "1";
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories/%s", todo_id, category_id)))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertNotEquals(405, response.statusCode(), "Expected status code 405 but received " + response.statusCode());
+    }
+
+    /**
+     * UNDOCUMENTED
+     * Test POST /todos/:id/categories/:id
+     * Input: path variable id for todo and id for category
+     * Actual: 404 Not Found
+     */
+    @Test
+    public void test_post_todos_id_categories_id_404() throws IOException, InterruptedException {
+        String todo_id = "1";
+        String category_id = "1";
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories/%s", todo_id, category_id)))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(404, response.statusCode());
+    }
+
+    /**
+     * DOCUMENTED
+     * Test DELETE /todos/:id/categories/:id
+     * Input: path variable id for todo and id for category
+     * Expected: 200 OK
+     */
+    @Test
+    public void test_delete_todos_id_categories_id_200() throws IOException, InterruptedException {
+        String todo_id = "1";
+        String category_id = "1";
+
+        // category to add to category
+        Map<String, String> category = new HashMap<>() {{
+            put("id", category_id);
+        }};
+        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(category));
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories", todo_id)))
+                .POST(requestBody)
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(201, response.statusCode());
+
+        // Send the request
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories/%s", todo_id, category_id)))
+                .DELETE()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(200, response.statusCode());
+    }
+
+    /**
+     * DOCUMENTED
+     * Test DELETE /todos/:id/categories/:id
+     * Input: path variable id for todo and id for category, but no relationship
+     * Expected: 404 Not Found with error message
+     */
+    @Test
+    public void test_delete_todos_id_categories_id_404() throws IOException, InterruptedException {
+        String todo_id = "2";
+        String category_id = "2";
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories/%s", todo_id, category_id)))
+                .DELETE()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(404, response.statusCode());
+
+        // Validate content of response body with request body
+        validateErrorMessage(objectMapper, response);
+    }
+
+    /**
+     * UNDOCUMENTED
+     * Test OPTIONS /todos/:id/categories/:id
+     * Input: path variable id for todo and id for category
+     * Expected: 200 OK with endpoint options
+     */
+    @Test
+    public void test_option_todos_id_categories_id_200() throws IOException, InterruptedException {
+        String todo_id = "1";
+        String category_id = "1";
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories/%s", todo_id, category_id)))
+                .method("OPTIONS", HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(200, response.statusCode());
+
+        // Get the headers from the response
+        Map<String, List<String>> headers = response.headers().map();
+        List<String> options = Arrays.asList(headers.get("Allow").get(0).split(",\\s*"));
+        assertTrue(options.containsAll(Arrays.asList("OPTIONS", "DELETE")));
+    }
+
+    /**
+     * UNDOCUMENTED
+     * Test HEAD /todos/:id/categories/:id
+     * Input: path variable id for todo and id for category
+     * Expected: 405 Method Not Allowed
+     */
+    @Test
+    public void test_head_todos_id_categories_id_405() throws IOException, InterruptedException {
+        String todo_id = "1";
+        String category_id = "1";
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories/%s", todo_id, category_id)))
+                .method("HEAD", HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertNotEquals(405, response.statusCode(), "Expected status code 405 but received " + response.statusCode());
+    }
+
+    /**
+     * UNDOCUMENTED
+     * Test HEAD /todos/:id/categories/:id
+     * Input: path variable id for todo and id for category
+     * Actual: 404 Not Found
+     */
+    @Test
+    public void test_head_todos_id_categories_id_404() throws IOException, InterruptedException {
+        String todo_id = "1";
+        String category_id = "1";
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories/%s", todo_id, category_id)))
+                .method("HEAD", HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(404, response.statusCode());
+    }
+
+    /**
+     * UNDOCUMENTED
+     * Test PATCH /todos/:id/categories/:id
+     * Input: path variable id for todo and id for category
+     * Expected: 405 Method Not Allowed
+     */
+    @Test
+    public void test_patch_todos_id_categories_id_405() throws IOException, InterruptedException {
+        String todo_id = "1";
+        String category_id = "1";
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories/%s", todo_id, category_id)))
+                .method("PATCH", HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(405, response.statusCode());
+    }
+
     // ----------------------- /todos/:id/taskof -----------------------
+
     // ----------------------- /todos/:id/taskof/:id -----------------------
+    
 }
