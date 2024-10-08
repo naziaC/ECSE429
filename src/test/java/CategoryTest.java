@@ -316,7 +316,7 @@ public class CategoryTest extends ApiTest{
      * DOCUMENTED
      * Test POST /categories/:id
      * Input: path variable id, request body with title, description, color
-     * Expected: 400 Bad Request with error message
+     * Unexpected: 400 Bad Request with error message
      */
     @Test
     public void test_post_categories_id_400() throws IOException, InterruptedException {
@@ -411,7 +411,7 @@ public class CategoryTest extends ApiTest{
      * DOCUMENTED
      * Test PUT /categories/:id
      * Input: path variable id, request body with title, description, color
-     * Expected: 400 Bad Request with error message
+     * Unexpected: 400 Bad Request with error message
      */
     @Test
     public void test_put_categories_id_400() throws IOException, InterruptedException {
@@ -717,7 +717,7 @@ public class CategoryTest extends ApiTest{
      * UNDOCUMENTED
      * Test POST /categories/:id/projects
      * Input: path variable id, request body with invalid project id
-     * Expected: 404 Not Found with error message
+     * Unexpected: 404 Not Found with error message
      */
     @Test
     public void test_post_categories_id_projects_404() throws IOException, InterruptedException {
@@ -1237,7 +1237,7 @@ public class CategoryTest extends ApiTest{
      * UNDOCUMENTED
      * Test POST /categories/:id/todos
      * Input: path variable id, request body with invalid todo id
-     * Expected: 404 Not Found with error message
+     * Unexpected: 404 Not Found with error message
      */
     @Test
     public void test_post_categories_id_todos_404() throws IOException, InterruptedException {
