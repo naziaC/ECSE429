@@ -843,6 +843,29 @@ public class ProjectTest extends ApiTest {
 
         // Check response status code
         assertEquals(201, response.statusCode());
+
+        // Add it again
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(201, response.statusCode());
+
+        // Get projects
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/projects/%s/tasks", projectId)))
+                .GET()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(200, response.statusCode());
+
+        // Check if response body is in JSON and contains list of tasks
+        assertNotNull(response.body());
+        JsonNode jsonResponse = objectMapper.readTree(response.body());
+        JsonNode responseTodos = jsonResponse.get("todos");
+        assertTrue(responseTodos.isArray());
+        assertEquals(1, responseTodos.size());
     }
 
     /**
@@ -1426,6 +1449,29 @@ public class ProjectTest extends ApiTest {
 
         // Check response status code
         assertEquals(201, response.statusCode());
+
+        // Add it again
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(201, response.statusCode());
+
+        // Get projects
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/projects/%s/categories", projectId)))
+                .GET()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(200, response.statusCode());
+
+        // Check if response body is in JSON and contains list of categories
+        assertNotNull(response.body());
+        JsonNode jsonResponse = objectMapper.readTree(response.body());
+        JsonNode responseCategories = jsonResponse.get("categories");
+        assertTrue(responseCategories.isArray());
+        assertEquals(1, responseCategories.size());
     }
 
     /**
