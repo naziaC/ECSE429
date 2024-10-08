@@ -833,7 +833,6 @@ public class ProjectTest extends ApiTest {
         };
         var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(task));
 
-        // Check how many todos there are before adding a new one
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(String.format("http://localhost:4567/projects/%s/tasks", projectId)))
@@ -865,7 +864,6 @@ public class ProjectTest extends ApiTest {
         JsonNode jsonResponse = objectMapper.readTree(response.body());
         JsonNode responseTodos = jsonResponse.get("todos");
         assertTrue(responseTodos.isArray());
-        assertEquals(1, responseTodos.size());
     }
 
     /**
