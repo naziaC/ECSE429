@@ -24,7 +24,7 @@ class ApiTest {
 
         // Start runTodoManagerRestApi-1.5.5.jar
         ProcessBuilder runTodoManagerRestAPI = new ProcessBuilder("java", "-jar", "runTodoManagerRestAPI-1.5.5.jar");
-        runTodoManagerRestAPI.start();
+        Process runTodoManagerRestAPIProcess = runTodoManagerRestAPI.start();
 
         // Wait for the application to start up
         try {
@@ -32,11 +32,16 @@ class ApiTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        // Check if the process is running
+        if (!runTodoManagerRestAPIProcess.isAlive()) {
+            throw new IllegalStateException("Application failed to start.");
+        }
     }
 
     @AfterAll
     static void shutdown() throws InterruptedException {
-        // http://localhost:4567/shutdown
+        // Shutdown the application
         ProcessBuilder shutdown = new ProcessBuilder("curl", "http://localhost:4567/shutdown");
         try {
             Process shutdownProcess = shutdown.start();
