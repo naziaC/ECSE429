@@ -650,8 +650,8 @@ public class CategoryTest extends ApiTest{
         // Check if response body is in JSON and contains list of categories
         assertNotNull(response.body());
         JsonNode jsonResponse = objectMapper.readTree(response.body());
-        JsonNode responseCategories = jsonResponse.get("projects");
-        assertTrue(responseCategories.isArray());
+        JsonNode responseProjects = jsonResponse.get("projects");
+        assertTrue(responseProjects.isArray());
     }
 
     /**
@@ -680,6 +680,29 @@ public class CategoryTest extends ApiTest{
 
         // Check response status code
         assertEquals(201, response.statusCode());
+
+        // Add it again
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(201, response.statusCode());
+
+        // Get projects
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/categories/%s/projects", id)))
+                .GET()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(200, response.statusCode());
+
+        // Check if response body is in JSON and contains list of categories
+        assertNotNull(response.body());
+        JsonNode jsonResponse = objectMapper.readTree(response.body());
+        JsonNode responseProjects = jsonResponse.get("projects");
+        assertTrue(responseProjects.isArray());
+        assertEquals(1, responseProjects.size());
     }
 
     /**
@@ -1170,8 +1193,8 @@ public class CategoryTest extends ApiTest{
         // Check if response body is in JSON and contains list of categories
         assertNotNull(response.body());
         JsonNode jsonResponse = objectMapper.readTree(response.body());
-        JsonNode responseCategories = jsonResponse.get("todos");
-        assertTrue(responseCategories.isArray());
+        JsonNode responseTodos = jsonResponse.get("todos");
+        assertTrue(responseTodos.isArray());
     }
 
     /**
@@ -1200,6 +1223,29 @@ public class CategoryTest extends ApiTest{
 
         // Check response status code
         assertEquals(201, response.statusCode());
+
+        // Add it again
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(201, response.statusCode());
+
+        // Get projects
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/categories/%s/todos", id)))
+                .GET()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(200, response.statusCode());
+
+        // Check if response body is in JSON and contains list of categories
+        assertNotNull(response.body());
+        JsonNode jsonResponse = objectMapper.readTree(response.body());
+        JsonNode responseTodos = jsonResponse.get("todos");
+        assertTrue(responseTodos.isArray());
+        assertEquals(1, responseTodos.size());
     }
 
     /**
