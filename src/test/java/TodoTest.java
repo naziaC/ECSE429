@@ -509,6 +509,53 @@ public class TodoTest extends ApiTest{
 
     /**
      * DOCUMENTED
+     * Test DELETE /todos/:id twice
+     * Input: path variable id
+     * Expected: 200 OK
+     */
+    @Test
+    public void test_delete_twice_todos_id_200() throws IOException, InterruptedException {
+        // Todo to be deleted
+        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(school_todo));
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:4567/todos"))
+                .POST(requestBody)
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(201, response.statusCode());
+
+        // Get id of todo created
+        JsonNode jsonResponse = objectMapper.readTree(response.body());
+        String id = jsonResponse.get("id").asText();
+
+        // Send the request
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s", id)))
+                .DELETE()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(200, response.statusCode());
+
+        // Send the request
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s", id)))
+                .DELETE()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(404, response.statusCode());
+    }
+
+    /**
+     * DOCUMENTED
      * Test DELETE /todos/:id
      * Input: invalid path variable id
      * Expected: 404 Not Found with error message
@@ -697,7 +744,7 @@ public class TodoTest extends ApiTest{
     public void test_post_todos_id_categories_201() throws IOException, InterruptedException {
         String id = "1";
 
-        // Category to be edited
+        // Category to be created
         Map<String, String> category = new HashMap<>() {{
             put("id", "1");
         }};
@@ -713,6 +760,28 @@ public class TodoTest extends ApiTest{
 
         // Check response status code
         assertEquals(201, response.statusCode());
+
+        // Add it again
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(201, response.statusCode());
+
+        // Get categories
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories", id)))
+                .GET()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(200, response.statusCode());
+
+        // Check if response body is in JSON and contains list of categories
+        assertNotNull(response.body());
+        JsonNode jsonResponse = objectMapper.readTree(response.body());
+        JsonNode responseProjects = jsonResponse.get("categories");
+        assertTrue(responseProjects.isArray());
     }
 
     /**
@@ -1032,6 +1101,55 @@ public class TodoTest extends ApiTest{
 
     /**
      * DOCUMENTED
+     * Test DELETE /todos/:id/categories/:id twice 
+     * Input: path variable id for todo and id for category
+     * Expected: 200 OK
+     */
+    @Test
+    public void test_delete_twice_todos_id_categories_id_200() throws IOException, InterruptedException {
+        String todo_id = "1";
+        String category_id = "1";
+
+        // Category id to add to todo 
+        Map<String, String> category = new HashMap<>() {{
+            put("id", category_id);
+        }};
+        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(category));
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories", todo_id)))
+                .POST(requestBody)
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(201, response.statusCode());
+
+        // Send the request
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories/%s", todo_id, category_id)))
+                .DELETE()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(200, response.statusCode());
+
+        // Send the request
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/categories/%s", todo_id, category_id)))
+                .DELETE()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(404, response.statusCode());
+    }
+
+    /**
+     * DOCUMENTED
      * Test DELETE /todos/:id/categories/:id
      * Input: path variable id for todo and id for category, but no relationship
      * Expected: 404 Not Found with error message
@@ -1176,7 +1294,7 @@ public class TodoTest extends ApiTest{
         // Check response status code
         assertEquals(200, response.statusCode());
 
-        // Check if response body is in JSON and contains list of categories
+        // Check if response body is in JSON and contains list of projects
         assertNotNull(response.body());
         JsonNode jsonResponse = objectMapper.readTree(response.body());
         JsonNode responseCategories = jsonResponse.get("projects");
@@ -1237,6 +1355,28 @@ public class TodoTest extends ApiTest{
 
         // Check response status code
         assertEquals(201, response.statusCode());
+
+        // Add it again
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(201, response.statusCode());
+
+        // Get tasksof
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/tasksof", id)))
+                .GET()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(200, response.statusCode());
+
+        // Check if response body is in JSON and contains list of projects
+        assertNotNull(response.body());
+        JsonNode jsonResponse = objectMapper.readTree(response.body());
+        JsonNode responseProjects = jsonResponse.get("projects");
+        assertTrue(responseProjects.isArray());
     }
 
     /**
@@ -1552,6 +1692,55 @@ public class TodoTest extends ApiTest{
 
         // Check response status code
         assertEquals(200, response.statusCode());
+    }
+
+    /**
+     * DOCUMENTED
+     * Test DELETE /todos/:id/tasksof/:id twice
+     * Input: path variable id for todo and id for project
+     * Expected: 200 OK
+     */
+    @Test
+    public void test_delete_twice_todos_id_tasksof_id_200() throws IOException, InterruptedException {
+        String todo_id = "1";
+        String project_id = "1";
+
+        // Project that the todo will be added
+        Map<String, String> project = new HashMap<>() {{
+            put("id", project_id);
+        }};
+        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(project));
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/tasksof", todo_id)))
+                .POST(requestBody)
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(201, response.statusCode());
+
+        // Send the request
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/tasksof/%s", todo_id, project_id)))
+                .DELETE()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(200, response.statusCode());
+
+        // Send the request
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/tasksof/%s", todo_id, project_id)))
+                .DELETE()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(404, response.statusCode());
     }
 
     /**
