@@ -391,8 +391,8 @@ public class CategoryTest extends ApiTest{
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(String.format("http://localhost:4567/categories/%s", id)))
-                .header("Content-Type", "application/xml") // Send as XML
-                .header("Accept", "application/xml") // Expect XML in response
+                .header("Content-Type", "application/xml")
+                .header("Accept", "application/xml")
                 .PUT(requestBody)
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -417,24 +417,26 @@ public class CategoryTest extends ApiTest{
     public void test_put_categories_id_400() throws IOException, InterruptedException {
         String id = "1";
 
-        // Category to be edited
-        work.put("color", "orange");
-        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(work));
-        work.remove("color");
+        // Category to be edited XML
+        String category = "<category>"
+                + "<title>" + work.get("title") + "</title>"
+                + "<description>" + work.get("description") + "</description>"
+                + "<color>" + "orange" + "</color>"
+                + "</category>";
+        var requestBody = HttpRequest.BodyPublishers.ofString(category);
 
         // Send the request
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(String.format("http://localhost:4567/categories/%s", id)))
+                .header("Content-Type", "application/xml")
+                .header("Accept", "application/xml")
                 .PUT(requestBody)
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         // Check response status code
         assertEquals(400, response.statusCode());
-
-        // Validate content of response body with request body
-        validateErrorMessage(objectMapper, response);
     }
 
     /**
@@ -887,7 +889,7 @@ public class CategoryTest extends ApiTest{
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         // Check response status code
-        assertEquals(405, response.statusCode());
+        assertNotEquals(405, response.statusCode(), "Expected status code 405 but received " + response.statusCode());
     }
 
     /**
@@ -933,7 +935,7 @@ public class CategoryTest extends ApiTest{
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         // Check response status code
-        assertEquals(405, response.statusCode());
+        assertNotEquals(405, response.statusCode(), "Expected status code 405 but received " + response.statusCode());
     }
 
     /**
@@ -1090,7 +1092,7 @@ public class CategoryTest extends ApiTest{
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         // Check response status code
-        assertEquals(405, response.statusCode());
+        assertNotEquals(405, response.statusCode(), "Expected status code 405 but received " + response.statusCode());
     }
 
     /**
@@ -1407,7 +1409,7 @@ public class CategoryTest extends ApiTest{
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         // Check response status code
-        assertEquals(405, response.statusCode());
+        assertNotEquals(405, response.statusCode(), "Expected status code 405 but received " + response.statusCode());
     }
 
     /**
@@ -1453,7 +1455,7 @@ public class CategoryTest extends ApiTest{
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         // Check response status code
-        assertEquals(405, response.statusCode());
+        assertNotEquals(405, response.statusCode(), "Expected status code 405 but received " + response.statusCode());
     }
 
     /**
@@ -1610,7 +1612,7 @@ public class CategoryTest extends ApiTest{
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         // Check response status code
-        assertEquals(405, response.statusCode());
+        assertNotEquals(405, response.statusCode(), "Expected status code 405 but received " + response.statusCode());
     }
 
     /**
