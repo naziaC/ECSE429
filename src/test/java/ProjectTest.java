@@ -535,6 +535,53 @@ public class ProjectTest extends ApiTest {
 
     /**
      * DOCUMENTED
+     * Test DELETE /projects/:id twice
+     * Input: path variable id
+     * Expected: 200 OK
+     */
+    @Test
+    public void test_delete_twice_projects_id_404() throws IOException, InterruptedException {
+        // Category to be created
+        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(project));
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:4567/projects"))
+                .POST(requestBody)
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(201, response.statusCode());
+
+        // Get id of category created
+        JsonNode jsonResponse = objectMapper.readTree(response.body());
+        String projectId = jsonResponse.get("id").asText();
+
+        // Send the request
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/projects/%s", projectId)))
+                .DELETE()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(200, response.statusCode());
+
+        // Send the request
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/projects/%s", projectId)))
+                .DELETE()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(404, response.statusCode());
+    }
+
+    /**
+     * DOCUMENTED
      * Test DELETE /projects/:id
      * Input: path variable id
      * Expected: 404 Not Found with error message
@@ -1143,6 +1190,57 @@ public class ProjectTest extends ApiTest {
 
     /**
      * DOCUMENTED
+     * Test DELETE /projects/:id/tasks/:id twice
+     * Input: path variable id for project and id for task
+     * Expected: 200 OK
+     */
+    @Test
+    public void test_delete_twice_projects_id_tasks_id_404() throws IOException, InterruptedException {
+        String projectId = "1";
+        String taskId = "1";
+
+        // Task to add to project
+        Map<String, String> task = new HashMap<>() {
+            {
+                put("id", taskId);
+            }
+        };
+        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(task));
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/projects/%s/tasks", projectId)))
+                .POST(requestBody)
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(201, response.statusCode());
+
+        // Send the request
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/projects/%s/tasks/%s", projectId, taskId)))
+                .DELETE()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(200, response.statusCode());
+
+        // Send the request again
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/projects/%s/tasks/%s", projectId, taskId)))
+                .DELETE()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(404, response.statusCode());
+    }
+
+    /**
+     * DOCUMENTED
      * Test DELETE /projects/:id/tasks/:id
      * Input: path variable id for project and id for task
      * Expected: 404 Not Found with error message
@@ -1697,6 +1795,55 @@ public class ProjectTest extends ApiTest {
 
         // Check response status code
         assertEquals(200, response.statusCode());
+    }
+
+    /**
+     * DOCUMENTED
+     * Test DELETE /projects/:id/categories/:id twice
+     * Input: path variable id for project and id for category
+     * Expected: 200 OK
+     */
+    @Test
+    public void test_delete_twice_projects_id_categories_id_404() throws IOException, InterruptedException {
+        String projectId = "1";
+        String categoryId = "1";
+
+        // Project to add to category
+        Map<String, String> category = new HashMap<>() {{
+            put("id", categoryId);
+        }};
+        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(category));
+
+        // Send the request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/projects/%s/categories", projectId)))
+                .POST(requestBody)
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(201, response.statusCode());
+
+        // Send the request
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/projects/%s/categories/%s", projectId, categoryId)))
+                .DELETE()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(200, response.statusCode());
+
+        // Send the delete request again
+        request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/projects/%s/categories/%s", projectId, categoryId)))
+                .DELETE()
+                .build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Check response status code
+        assertEquals(404, response.statusCode());
     }
 
     /**
