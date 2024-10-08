@@ -355,10 +355,10 @@ public class ProjectTest extends ApiTest {
     }
 
     /**
-     * DOCUMENTED (however unexpected! this does not appear in the swagger at all)
+     * DOCUMENTED
      * Test PUT /projects/:id
      * Input: path variable id, request body with title, description, field
-     * Expected: 400 Bad Request
+     * Unexpected: 400 Bad Request (this does not appear in the swagger)
      */
     @Test
     public void test_put_projects_id_400() throws IOException, InterruptedException {
@@ -562,8 +562,7 @@ public class ProjectTest extends ApiTest {
      * DOCUMENTED
      * Test OPTIONS /projects/:id
      * Input: path variable id
-     * Expected: 200 OK status with all Options for endpoint of projects for a
-     * project that does not exist
+     * Expected: 200 OK status with all Options for endpoint of projects
      */
     @Test
     public void test_options_projects_id_200() throws IOException, InterruptedException {
@@ -589,9 +588,8 @@ public class ProjectTest extends ApiTest {
     /**
      * DOCUMENTED
      * Test OPTIONS /projects/:id
-     * Input: path variable id for a project that DNE // todo
-     * Expected: 200 OK status with all Options for endpoint of projects for a
-     * project that does not exist
+     * Input: path variable id for a project that does not exist
+     * Expected: 200 OK status with all Options for endpoint of projects
      */
     @Test
     public void test_options_two_projects_id_200() throws IOException, InterruptedException {
@@ -721,7 +719,7 @@ public class ProjectTest extends ApiTest {
     /**
      * DOCUMENTED
      * Test GET /projects/:id/tasks
-     * Input: path variable id
+     * Input: path variable id of project that does not exist
      * Expected: 200 OK status with all the projects in response body
      */
     @Test
@@ -757,7 +755,7 @@ public class ProjectTest extends ApiTest {
         var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(amendedProject));
 
         // Send the request
-        String projectId = "100";
+        String projectId = "1";
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(String.format("http://localhost:4567/projects/%s/tasks", projectId)))
@@ -828,7 +826,7 @@ public class ProjectTest extends ApiTest {
      * DOCUMENTED
      * Test POST /projects/:id/tasks
      * Input: path variable id, request body with id
-     * Expected: 404 Not Found with error message
+     * Unexpected: 404 Not Found with error message (this does not appear in the swagger)
      */
     @Test
     public void test_post_projects_id_tasks_404() throws IOException, InterruptedException {
@@ -911,9 +909,8 @@ public class ProjectTest extends ApiTest {
     /**
      * DOCUMENTED
      * Test OPTIONS /projects/:id/tasks
-     * Input: path variable id
-     * Expected: 200 OK status with all Options for endpoint of projects for a
-     * project that does not exist
+     * Input: path variable id of project that does not exist
+     * Expected: 200 OK status with all Options for endpoint of projects
      */
     @Test
     public void test_options_two_projects_id_tasks_200() throws IOException, InterruptedException {
@@ -1015,7 +1012,7 @@ public class ProjectTest extends ApiTest {
      * UNDOCUMENTED
      * Test GET /projects/:id/tasks/:id
      * Input: path variable id for project and id for task
-     * Actual: 404 Not Found
+     * Unexpected: 404 Not Found
      */
     @Test
     public void test_get_projects_id_tasks_id_404() throws IOException, InterruptedException {
@@ -1029,9 +1026,6 @@ public class ProjectTest extends ApiTest {
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        // Check response status code
-        assertFalse(response.statusCode() == 405);
 
         // Check response status code
         assertEquals(404, response.statusCode());
@@ -1087,7 +1081,7 @@ public class ProjectTest extends ApiTest {
      * UNDOCUMENTED
      * Test POST /projects/:id/tasks/:id
      * Input: path variable id for project and id for task
-     * Actual: 404 Not Found
+     * Unexpected: 404 Not Found
      */
     @Test
     public void test_post_projects_id_tasks_id_404() throws IOException, InterruptedException {
@@ -1230,7 +1224,7 @@ public class ProjectTest extends ApiTest {
      * UNDOCUMENTED
      * Test HEAD /projects/:id/tasks/:id
      * Input: path variable id for project and id for task
-     * Actual: 404 Not Found
+     * Unexpected: 404 Not Found
      */
     @Test
     public void test_head_projects_id_tasks_id_404() throws IOException, InterruptedException {
@@ -1282,7 +1276,7 @@ public class ProjectTest extends ApiTest {
      * DOCUMENTED
      * Test GET /projects/:id/categories
      * Input: path variable id
-     * Expected: 200 OK with "projects" list of projects with id in response body
+     * Expected: 200 OK with "categories" list of projects with id in response body
      */
     @Test
     public void test_get_projects_id_categories_200() throws IOException, InterruptedException {
@@ -1555,7 +1549,7 @@ public class ProjectTest extends ApiTest {
      * UNDOCUMENTED
      * Test GET /projects/:id/categories/:id
      * Input: path variable id for project and id for category
-     * Actual: 404 Not Found
+     * Unexpected: 404 Not Found
      */
     @Test
     public void test_get_projects_id_categories_id_404() throws IOException, InterruptedException {
@@ -1601,7 +1595,7 @@ public class ProjectTest extends ApiTest {
      * UNDOCUMENTED
      * Test POST /projects/:id/categories/:id
      * Input: path variable id for project and id for category
-     * Actual: 404 Not Found
+     * Unexpected: 404 Not Found
      */
     @Test
     public void test_post_projects_id_categories_id_404() throws IOException, InterruptedException {
@@ -1679,7 +1673,7 @@ public class ProjectTest extends ApiTest {
 
         // Project to add to category
         Map<String, String> category = new HashMap<>() {{
-            put("id", projectId);
+            put("id", categoryId);
         }};
         var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(category));
 
@@ -1713,8 +1707,8 @@ public class ProjectTest extends ApiTest {
      */
     @Test
     public void test_delete_projects_id_categories_id_404() throws IOException, InterruptedException {
-        String projectId = "2";
-        String categoryId = "2";
+        String projectId = "100";
+        String categoryId = "100";
 
         // Send the request
         HttpClient client = HttpClient.newHttpClient();
@@ -1758,7 +1752,7 @@ public class ProjectTest extends ApiTest {
      * UNDOCUMENTED
      * Test HEAD /projects/:id/categories/:id
      * Input: path variable id for project and id for category
-     * Actual: 404 Not Found
+     * Unexpected: 404 Not Found
      */
     @Test
     public void test_head_projects_id_categories_id_404() throws IOException, InterruptedException {
