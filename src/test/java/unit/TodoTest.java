@@ -1,3 +1,5 @@
+package unit;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.MethodOrderer;
@@ -20,7 +22,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.Random.class)
-public class TodoTest extends ApiTest{
+public class TodoTest extends ApiTest {
     private final Map<String, String> school_todo = new HashMap<>() {{
         put("title", "School");
         put("description", "Assignments to do");
