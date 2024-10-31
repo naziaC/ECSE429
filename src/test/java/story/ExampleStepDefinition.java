@@ -1,4 +1,4 @@
-package gherkin;
+package story;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
@@ -12,13 +12,12 @@ public class ExampleStepDefinition {
 
     @Given("this is a test")
     public void this_is_a_test() {
-        System.out.println("Setting up the test");
-        testPassed = false;  // Initial state
+        testPassed = false;
     }
 
     @When("I run the test")
     public void i_run_the_test() {
-        testPassed = true;  // Simulate a passing test
+        testPassed = true;
     }
 
     @Then("it should pass")
