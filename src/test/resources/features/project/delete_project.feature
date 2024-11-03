@@ -27,10 +27,10 @@ Feature: Delete a Project
       | project_id |
       | 2          |
 
-  Scenario Outline: Delete a project with an invalid ID (Error flow)
+  Scenario Outline: Delete a nonexistent project by ID (Error flow)
     When a user sends a DELETE request for a project with ID "<project_id>"
     Then the status code 404 will be received
-    And the response body should contain the error message "Could not find any instances with projects/100"
+    And the response body should contain the error message "Could not find any instances with projects/<project_id>"
     Examples:
       | project_id |
       | 100        |

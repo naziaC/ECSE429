@@ -1,7 +1,7 @@
 Feature: Create a project
   As a user,
   I want to create a project,
-  so that I can manage manage my tasks and organize my work.
+  so that I can manage my tasks and organize my work.
 
   Background:
     Given the REST API todo list Manager is running

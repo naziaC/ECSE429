@@ -1,9 +1,6 @@
 package story;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,45 +10,9 @@ import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Helper {
-
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+public class HelperProject {
 
     private static final HttpClient client = HttpClient.newHttpClient();
-
-    static void startApplication() throws IOException {
-        // Start runTodoManagerRestApi-1.5.5.jar
-        ProcessBuilder runTodoManagerRestAPI = new ProcessBuilder("java", "-jar", "runTodoManagerRestAPI-1.5.5.jar");
-        Process runTodoManagerRestAPIProcess = runTodoManagerRestAPI.start();
-
-        // Wait for the application to start up
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // Check if the process is running
-        if (!runTodoManagerRestAPIProcess.isAlive()) {
-            throw new IllegalStateException("Application failed to start.");
-        }
-    }
-
-    @After
-    public void shutdownApplication() throws InterruptedException {
-        // Shutdown the application
-        ProcessBuilder shutdown = new ProcessBuilder("curl", "http://localhost:4567/shutdown");
-        try {
-            Process shutdownProcess = shutdown.start();
-            shutdownProcess.waitFor();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static JsonNode getObjectFromResponse(HttpResponse<String> response) throws IOException {
-        return objectMapper.readTree(response.body());
-    }
 
     // Project-related functions
     /**
@@ -78,7 +39,7 @@ public class Helper {
         project.put("active", active);
         project.put("completed", completed);
         project.put("description", description);
-        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(project));
+        var requestBody = HttpRequest.BodyPublishers.ofString(CommonHelper.getStringFromObject(project));
 
         // Send the request
         HttpRequest request = HttpRequest.newBuilder()
@@ -96,7 +57,7 @@ public class Helper {
         Map<String, Object> project = new HashMap<>();
         project.put("title", title);
         project.put("description", description);
-        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(project));
+        var requestBody = HttpRequest.BodyPublishers.ofString(CommonHelper.getStringFromObject(project));
 
         // Send the request
         HttpRequest request = HttpRequest.newBuilder()
@@ -114,7 +75,7 @@ public class Helper {
         Map<String, Object> project = new HashMap<>();
         project.put("title", title);
         project.put("description", description);
-        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(project));
+        var requestBody = HttpRequest.BodyPublishers.ofString(CommonHelper.getStringFromObject(project));
 
         // Send the request
         HttpRequest request = HttpRequest.newBuilder()
@@ -146,7 +107,7 @@ public class Helper {
                 if (!todoTitle.isEmpty()) put("title", todoTitle);
             }
         };
-        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(task));
+        var requestBody = HttpRequest.BodyPublishers.ofString(CommonHelper.getStringFromObject(task));
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(String.format("http://localhost:4567/projects/%s/tasks", projectId)))
@@ -182,7 +143,7 @@ public class Helper {
 
         // Delete all projects
         if (response.statusCode() == 200) {
-            JsonNode rootNode = objectMapper.readTree(response.body());
+            JsonNode rootNode = CommonHelper.getObjectFromResponse(response);
             JsonNode projectsArray = rootNode.get("projects"); // Access the "projects" array
 
             if (projectsArray != null && projectsArray.isArray()) {

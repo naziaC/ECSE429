@@ -31,10 +31,10 @@ Feature: Associate Project Tasks
       | project_id | todo_title |
       | 2          | Todo Item  |
 
-  Scenario Outline: Create a task relationship between an nonexistent project and a existent todo item (Error flow)
+  Scenario Outline: Create a task relationship between a nonexistent project and an existent todo item (Error flow)
     When a user sends a POST request with a body containing todo ID "<todo_id>" to associate with a project with ID "<project_id>"
     Then the status code 404 will be received
-    And the response body should contain the error message "Could not find parent thing for relationship projects/100/tasks"
+    And the response body should contain the error message "Could not find parent thing for relationship projects/<project_id>/tasks"
     Examples:
       | project_id | todo_id |
       | 100        | 2       |
