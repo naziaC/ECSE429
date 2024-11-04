@@ -26,8 +26,8 @@ Feature: Delete a Category
   Scenario Outline: Delete a category by ID with associated todos (Alternate flow)
     When a user sends a DELETE request for a category with id "<category_id>"
     Then the status code 200 will be received from categoryAPI
-    And the relationship will be removed between the category with id "<category_id>" and the associated todo items
     And the category with id "<category_id>" should no longer exist in the system
+    And the category id "<category_id>" is no longer associated with any todos
     Examples:
       | category_id |
       | 3           |

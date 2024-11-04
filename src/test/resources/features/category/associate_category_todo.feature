@@ -15,26 +15,28 @@ Feature: Associate Category Todos
       | 3           | 1       |
       | 3           | 2       |
 
-  Scenario Outline: Create a relationship between an existing category and an existing todo item (Normal flow)
-    When a user sends a POST request to associate a todo id "<todo_id>" of title "<todo_title>" with a category id "<category_id>"
+  Scenario Outline: Create a relationship between an existing category and an existing todo item by todo id (Normal flow)
+    When a user sends a POST request to associate a todo id "<todo_id>" with a category id "<category_id>"
     Then the status code 201 will be received from categoryAPI
-    And a new relationship is created between category id "<category_id>" and the todo item with id "<todo_id>" and title "<todo_title>"
+    And the todo id "<todo_id>" is associated with category id "<category_id>"
+    And the category id "<category_id>" is associated with todo id "<todo_id>"
     Examples:
       | category_id | todo_id | todo_title     |
       | 4           | 1       | scan paperwork |
 
-  Scenario Outline: Create a relationship between an existing category and a nonexistent todo item (Alternate flow)
-    When a user sends a POST request to associate a todo id "<todo_id>" of title "<todo_title>" with a category id "<category_id>"
+  Scenario Outline: Create a relationship between an existing category and an existing todo item by todo title (Alternate flow)
+    When a user sends a POST request to associate a todo title "<todo_title>" with a category id "<category_id>"
     Then the status code 201 will be received from categoryAPI
-    And a new relationship is created between category id "<category_id>" and the todo item with id "<todo_id>" and title "<todo_title>"
+    And the todo id "<todo_id>" is associated with category id "<category_id>"
+    And the category id "<category_id>" is associated with todo id "<todo_id>"
     Examples:
-      | category_id | todo_id | todo_title |
-      | 4           |         | ToDoA      |
+      | category_id | todo_id | todo_title     |
+      | 4           | 2       | file paperwork |
 
   Scenario Outline: Create a relationship between a nonexistent category and an existing todo item (Error flow)
-    When a user sends a POST request to associate a todo id "<todo_id>" of title "<todo_title>" with a category id "<category_id>"
+    When a user sends a POST request to associate a todo id "<todo_id>" with a category id "<category_id>"
     Then the status code 404 will be received from categoryAPI
     And the response body should contain the error message "Could not find parent thing for relationship categories/<category_id>/todos" from categoryAPI
     Examples:
-      | category_id | todo_id | todo_title     |
-      | 100         | 1       | scan paperwork |
+      | category_id | todo_id |
+      | 100         | 1       |

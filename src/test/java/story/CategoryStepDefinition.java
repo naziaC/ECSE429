@@ -124,16 +124,21 @@ public class CategoryStepDefinition {
 
     // ------ associate_category_todo.feature -------
 
-    // Scenario Outline: Create a relationship between an existing category and an existing todo item (Normal flow)
-    // Scenario Outline: Create a relationship between an existing category and a nonexistent todo item (Alternate flow)
+    // Scenario Outline: Create a relationship between an existing category and an existing todo item by todo id (Normal flow)
     // Scenario Outline: Create a relationship between a nonexistent category and an existing todo item (Error flow)
-    @When("a user sends a POST request to associate a todo id {string} of title {string} with a category id {string}")
-    public void a_user_sends_a_POST_request_to_associate_a_todo_id_of_title_with_a_category_id(String todoId, String todoTitle, String categoryId) throws IOException, InterruptedException {
-        response = HelperCategory.associateCategoryTodo(categoryId, todoId, todoTitle);
+    @When("a user sends a POST request to associate a todo id {string} with a category id {string}")
+    public void a_user_sends_a_POST_request_to_associate_a_todo_id_with_a_category_id(String todoId, String categoryId) throws IOException, InterruptedException {
+        response = HelperCategory.associateCategoryTodo(categoryId, todoId, "");
     }
 
-    @Then("a new relationship is created between category id {string} and the todo item with id {string} and title {string}")
-    public void a_new_relationship_is_created_between_category_id_and_the_todo_item_with_id_and_title(String categoryId, String todoId, String todoTitle) throws IOException, InterruptedException {
+    // Scenario Outline: Create a relationship between an existing category and an existing todo item by todo title (Alternate flow)
+    @When("a user sends a POST request to associate a todo title {string} with a category id {string}")
+    public void a_user_sends_a_POST_request_to_associate_a_todo_title_with_a_category_id(String todoTitle, String categoryId) throws IOException, InterruptedException {
+        response = HelperCategory.associateCategoryTodo(categoryId, "", todoTitle);
+    }
+
+    @Then("the todo id {string} is associated with category id {string}")
+    public void the_todo_id_is_associated_with_category_id(String todoId, String categoryId) throws IOException, InterruptedException {
         // Get the todos for category with ID
         response = HelperCategory.getCategoryTodos(categoryId);
         JsonNode responseBody = CommonHelper.getObjectFromResponse(response);
@@ -143,16 +148,21 @@ public class CategoryStepDefinition {
         // Ensure the todos array is not null and contains todo with title
         if (todosArray != null && todosArray.isArray() && todosArray.size() > 0) {
             for (JsonNode todo : todosArray) {
-                if (todo.get("title").asText().equals(todoTitle)) {
+                if (todo.get("id").asText().equals(todoId)) {
                     todoFound = true;
                     break;
                 }
             }
         }
 
+        assertTrue(todoFound);
+    }
+
+    @Then("the category id {string} is associated with todo id {string}")
+    public void the_category_id_is_associated_with_todo_id(String categoryId, String todoId) throws IOException, InterruptedException {
         // Get the categories for todo with ID
         response = HelperCategory.getTodoCategories(todoId);
-        responseBody = CommonHelper.getObjectFromResponse(response);
+        JsonNode responseBody = CommonHelper.getObjectFromResponse(response);
         JsonNode categoriesArray = responseBody.get("categories");
 
         boolean categoryFound = false;
@@ -166,7 +176,7 @@ public class CategoryStepDefinition {
             }
         }
 
-        assertTrue(todoFound && categoryFound);
+        assertTrue(categoryFound);
     }
 
     // ------ delete_category.feature -------
@@ -189,8 +199,8 @@ public class CategoryStepDefinition {
         assertTrue(responseBody.has("errorMessages"));
     }
 
-    @Then("the relationship will be removed between the category with id {string} and the associated todo items")
-    public void the_relationship_will_be_removed_between_the_category_with_id_and_the_associated_todo_items(String categoryId) throws IOException, InterruptedException {
+    @Then("the category id {string} is no longer associated with any todos")
+    public void the_category_id_is_no_longer_associated_with_any_todos(String categoryId) throws IOException, InterruptedException {
         // Send a GET requests to verify the todos have no relation to the category
         response = HelperCategory.getAllTodos();
 
@@ -204,7 +214,7 @@ public class CategoryStepDefinition {
                 JsonNode categoriesArray = todo.get("categories");
                 if (categoriesArray != null && categoriesArray.isArray()) {
                     for (JsonNode category : categoriesArray) {
-                        if (category.get("id").asText().equals(categoryId)) fail("Deleted category still related to todo item.");
+                        if (category.get("id").asText().equals(categoryId)) fail("Deleted category id still related to todo item.");
                     }
                 }
             }
