@@ -15,7 +15,7 @@ public class CommonHelper {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
-    public static void startApplication() throws IOException {
+    public void startApplication() throws IOException {
         // Start runTodoManagerRestApi-1.5.5.jar
         ProcessBuilder runTodoManagerRestAPI = new ProcessBuilder("java", "-jar", "runTodoManagerRestAPI-1.5.5.jar");
         runTodoManagerRestAPIProcess = runTodoManagerRestAPI.start();
