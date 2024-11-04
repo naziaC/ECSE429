@@ -83,13 +83,13 @@ public class TodoStepDefinition {
 
     @When("a user sends a POST request with description {string} for an existing todo with ID {string}")
     public void a_user_sends_a_post_request_with_description_for_an_existing_todo_with_id(
-        String todoId, String description) throws IOException, InterruptedException {
+        String description, String todoId) throws IOException, InterruptedException {
             response = HelperTodo.amendTodoPost(todoId, description);
     }
 
     @When("a user sends a PUT request with description {string} for an existing todo with ID {string}")
     public void a_user_sends_a_put_request_with_description_for_an_existing_todo_with_id(
-        String todoId, String description) throws IOException, InterruptedException {
+        String description, String todoId) throws IOException, InterruptedException {
             response = HelperTodo.amendTodoPut(todoId, description);
     }
 
@@ -98,10 +98,9 @@ public class TodoStepDefinition {
         response = HelperTodo.amendTodoPost(todoId, "");
     }
 
-
     @Then("the todo is updated with description {string} while title {string} and doneStatus {string} remain the same")
     public void the_todo_is_updated_with_description_while_title_and_done_status_remain_the_same(
-        String doneStatus, String title, String description) throws IOException, InterruptedException {
+        String description, String title, String doneStatus) throws IOException, InterruptedException {
 
         JsonNode responseBody = CommonHelper.getObjectFromResponse(response);
         assertEquals(title, responseBody.get("title").asText());
