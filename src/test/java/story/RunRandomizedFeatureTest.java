@@ -12,8 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-// This class is used to shuffle the feature files in a random order and uses the RunCucumberTestRandomizer class to run the tests
-// Run FeatureRunner to run the tests in a random order
+// This class is used to shuffle the feature files in a random order and uses the RunRandomizedCucumberTest class to run the tests
+// Run RunRandomizedFeatureTest to run the tests in a random order
 @RunWith(Parameterized.class)
 public record RunRandomizedFeatureTest(String featurePath, String featureName) {
 
@@ -23,7 +23,7 @@ public record RunRandomizedFeatureTest(String featurePath, String featureName) {
             "src/test/resources/features/category"
     };
 
-    @Parameters(name = "{index}: Feature({1})")
+    @Parameters(name = "{index}: {1}")
     public static Iterable<Object[]> getFeatureFiles() {
         List<Object[]> features = new ArrayList<>();
         for (String dir : featuresDirectories) {

@@ -5,7 +5,7 @@ import io.cucumber.junit.CucumberOptions;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-// Run FeatureRunner to run the tests in a random order
+// Run RunRandomizedFeatureTest to execute the tests in a random order
 @RunWith(Cucumber.class)
 @CucumberOptions(plugin = {"pretty"}, glue = {"story"})
 public class RunRandomizedCucumberTest {
