@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 // Run FeatureRunner to run the tests in a random order
 @RunWith(Cucumber.class)
 @CucumberOptions(plugin = {"pretty"}, glue = {"story"})
-public class RunCucumberTestRandomizer {
+public class RunRandomizedCucumberTest {
 
     @BeforeClass
     public static void validateFeaturePath() {
