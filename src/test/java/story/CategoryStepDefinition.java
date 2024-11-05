@@ -104,7 +104,7 @@ public class CategoryStepDefinition {
     // ------ amend_category.feature -------
 
     // Scenario Outline: Amend a category with POST (Normal flow)
-    // Scenario Outline: Amend a category with POST and duplicate title (Error flow)
+    // Scenario Outline: Amend a category with POST and duplicate title (Error flow) -> fails
     @When("a user sends a POST request with category id {string}, title {string}, and description {string}")
     public void a_user_sends_a_POST_request_with_title_and_description_for_an_existing_category_with_id(String categoryId, String title, String description) throws IOException, InterruptedException {
         response = HelperCategory.amendCategoryPost(categoryId, title, description);
@@ -124,14 +124,14 @@ public class CategoryStepDefinition {
 
     // ------ associate_category_todo.feature -------
 
-    // Scenario Outline: Create a relationship between an existing category and an existing todo item by todo id (Normal flow)
+    // Scenario Outline: Create a relationship between an existing category and an existing todo item by todo id (Normal flow) -> fails
     // Scenario Outline: Create a relationship between a nonexistent category and an existing todo item (Error flow)
     @When("a user sends a POST request to associate a todo id {string} with a category id {string}")
     public void a_user_sends_a_POST_request_to_associate_a_todo_id_with_a_category_id(String todoId, String categoryId) throws IOException, InterruptedException {
         response = HelperCategory.associateCategoryTodo(categoryId, todoId, "");
     }
 
-    // Scenario Outline: Create a relationship between an existing category and an existing todo item by todo title (Alternate flow)
+    // Scenario Outline: Create a relationship between an existing category and an existing todo item by todo title (Alternate flow) -> fails
     @When("a user sends a POST request to associate a todo title {string} with a category id {string}")
     public void a_user_sends_a_POST_request_to_associate_a_todo_title_with_a_category_id(String todoTitle, String categoryId) throws IOException, InterruptedException {
         response = HelperCategory.associateCategoryTodo(categoryId, "", todoTitle);
