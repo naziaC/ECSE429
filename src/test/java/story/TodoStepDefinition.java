@@ -146,8 +146,71 @@ public class TodoStepDefinition {
             fail("No todos found in the response body.");
         }
     }
+    
+    // ------ associate_todo_project.feature ------
 
-    // // ------ COMMON -------
+    @When("a user sends a POST request to associate a todo id {string} with a project id {string}")
+    public void a_user_sends_a_post_request_to_associate_a_todo_id_with_a_project_id(String todo_id, String project_id) throws IOException, InterruptedException {
+        response = HelperTodo.associateTodoProject(todo_id, project_id);
+    }
+
+    @When("a user sends a POST request to associate a todo id {string} with an empty body for the project ID")
+    public void a_user_sends_a_post_request_to_associate_a_todo_id_with_an_empty_body_for_the_project_id(String todo_id) throws IOException, InterruptedException {
+        response = HelperTodo.associateTodoProject(todo_id, "");
+    }
+
+    @Then("the todo id {string} is associated with project id {string}")
+    public void the_todo_id_is_associated_with_project_id(String todo_id, String project_id) throws IOException, InterruptedException {
+        // Get the todos for category with ID
+        response = HelperProject.getProjectTask(project_id);
+        JsonNode responseBody = CommonHelper.getObjectFromResponse(response);
+        JsonNode todosArray = responseBody.get("todos");
+
+        boolean todoFound = false;
+        // Ensure the todos array is not null and contains todo with title
+        if (todosArray != null && todosArray.isArray() && todosArray.size() > 0) {
+            for (JsonNode todo : todosArray) {
+                if (todo.get("id").asText().equals(todo_id)) {
+                    todoFound = true;
+                    break;
+                }
+            }
+        }
+
+        assertTrue(todoFound);
+    }
+
+    @Then("a project is created with id {string}, title {string} and description {string}")
+    public void a_project_is_created_with_id_title_and_description(String project_id, String title, String description) throws IOException, InterruptedException {
+        JsonNode responseBody = CommonHelper.getObjectFromResponse(response);
+        assertEquals(project_id, responseBody.get("id"));
+        assertEquals(title, responseBody.get("title"));
+        assertEquals(description, responseBody.get("description"));
+    }
+    
+
+    @Then("the project id {string} is associated with todo id {string}")
+    public void the_project_id_is_associated_with_todo_id(String project_id, String todo_id) throws IOException, InterruptedException {
+        // Get the project related to do with ID
+        response = HelperTodo.getProjectsOfTask(todo_id);
+        JsonNode responseBody = CommonHelper.getObjectFromResponse(response);
+        JsonNode projectArray = responseBody.get("projects");
+
+        boolean projectFound = false;
+        // Ensure the todos array is not null and contains todo with title
+        if (projectArray != null && projectArray.isArray() && projectArray.size() > 0) {
+            for (JsonNode project : projectArray) {
+                if (project.get("id").asText().equals(project_id)) {
+                    projectFound = true;
+                    break;
+                }
+            }
+        }
+
+        assertTrue(projectFound);
+    }
+
+    // ------ COMMON -------
     @Then("the status code {int} will be received from the todoAPI")
     public void the_status_code_will_be_received_from_the_todo_api(int expectedStatusCode) {
         assertEquals(expectedStatusCode, response.statusCode());

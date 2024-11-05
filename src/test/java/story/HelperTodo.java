@@ -74,24 +74,6 @@ public class HelperTodo {
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    // /**
-    //  * For amend_project.feature
-    //  */
-    // public static HttpResponse<String> amendProjectPost(String projectId, String title, String description) throws IOException, InterruptedException {
-    //     // Project to be created
-    //     Map<String, Object> project = new HashMap<>();
-    //     project.put("title", title);
-    //     project.put("description", description);
-    //     var requestBody = HttpRequest.BodyPublishers.ofString(CommonHelper.getStringFromObject(project));
-
-    //     // Send the request
-    //     HttpRequest request = HttpRequest.newBuilder()
-    //             .uri(URI.create("http://localhost:4567/projects/" + projectId))
-    //             .POST(requestBody)
-    //             .build();
-    //     return client.send(request, HttpResponse.BodyHandlers.ofString());
-    // }
-
     /**
      * For amend_todo.feature
      */
@@ -114,6 +96,55 @@ public class HelperTodo {
         // Get all projects
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:4567/todos"))
+                .GET()
+                .build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+
+   /**
+     * For associate_project_task.feature
+     */
+    public static HttpResponse<String> associateProjectTask(String projectId, String todoId, String todoTitle) throws IOException, InterruptedException {
+        Map<String, Object> task = new HashMap<>() {
+            {
+                if (todoTitle.isEmpty()) put("id", todoId);
+                if (!todoTitle.isEmpty()) put("title", todoTitle);
+            }
+        };
+        var requestBody = HttpRequest.BodyPublishers.ofString(CommonHelper.getStringFromObject(task));
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/projects/%s/tasks", projectId)))
+                .POST(requestBody)
+                .build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    /**
+     * For associate_todo_project.feature
+     */
+    public static HttpResponse<String> associateTodoProject(String todoId, String projectId) throws IOException, InterruptedException {
+        Map<String, Object> project = new HashMap<>() {
+            {
+                if (!projectId.isEmpty()) put("id", projectId);
+            }
+        };
+        var requestBody = HttpRequest.BodyPublishers.ofString(CommonHelper.getStringFromObject(project));
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/tasksof", todoId)))
+                .POST(requestBody)
+                .build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    /**
+     * For associate_todo_project.feature
+     */
+    public static HttpResponse<String> getProjectsOfTask(String todoId) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("http://localhost:4567/todos/%s/tasksof", todoId)))
                 .GET()
                 .build();
         return client.send(request, HttpResponse.BodyHandlers.ofString());

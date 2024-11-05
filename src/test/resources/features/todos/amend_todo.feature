@@ -18,7 +18,7 @@ Feature: Amend Todo
       | id | title | doneStatus | description         |
       | 3  | todoA | false      | updatedDescriptionA |
 
-  Scenario Outline: Amend a todo with PUT (Normal flow)
+  Scenario Outline: Amend a todo with PUT (Alternate flow)
     When a user sends a PUT request with description "<description>" for an existing todo with ID "<id>"
     Then the status code 200 will be received from the todoAPI
     And the todo is updated with description "<description>" while title "<title>" and doneStatus "<doneStatus>" remain the same
