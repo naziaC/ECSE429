@@ -7,9 +7,9 @@ Feature: Associate Project Tasks
     Given the REST API todo list Manager is running
     And the following projects exist in the system:
       | project_id | title    | completed | active | description  |
-      | 2          | ProjectA | false     | false  | DescriptionA |
+      | 2          | ProjectA | false     | true   | DescriptionA |
       | 3          | ProjectB | false     | true   | DescriptionB |
-      | 4          | ProjectC | false     | false  | DescriptionC |
+      | 4          | ProjectC | false     | true   | DescriptionC |
     And the following tasks exist for each project:
       | project_id | todo_id |
       | 3          | 1       |

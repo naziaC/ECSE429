@@ -82,8 +82,8 @@ public class ProjectStepDefinition {
             JsonNode project = projectsArray.get(0);
             assertEquals(title, project.get("title").asText());
             assertEquals(Boolean.parseBoolean(completed), project.get("completed").asBoolean());
-//            assertEquals(Boolean.parseBoolean(active), project.get("active").asBoolean()); // todo add this back
-//            assertEquals(description, project.get("description").asText());
+            assertEquals(Boolean.parseBoolean(active), project.get("active").asBoolean());
+            assertEquals(description, project.get("description").asText());
         } else {
             fail("No projects found in the response body.");
         }
@@ -124,12 +124,13 @@ public class ProjectStepDefinition {
     // ------ amend_project.feature -------
 
     // Scenario Outline: Amend a project with POST (Normal flow)
+    // Scenario Outline: Amend a project with POST and duplicate title (Error flow) -> fails
     @When("a user sends a POST request with title {string} and description {string} for an existing project with ID {string}")
     public void a_user_sends_a_POST_request_with_title_and_description_for_an_existing_project(String title, String description, String projectId) throws IOException, InterruptedException {
         response = HelperProject.amendProjectPost(projectId, title, description);
     }
 
-    // Scenario Outline: Amend a project with PUT (Alternate flow)
+    // Scenario Outline: Amend a project with PUT (Alternate flow) -> fails
     @When("a user sends a PUT request with title {string} and description {string} for an existing project with ID {string}")
     public void a_user_sends_a_PUT_request_with_title_and_description_for_an_existing_project(String title, String description, String projectId) throws IOException, InterruptedException {
         response = HelperProject.amendProjectPut(projectId, title, description);
@@ -146,8 +147,8 @@ public class ProjectStepDefinition {
         JsonNode responseBody = CommonHelper.getObjectFromResponse(response);
         assertEquals(title, responseBody.get("title").asText());
         assertEquals(description, responseBody.get("description").asText());
-//        assertEquals(completed, responseBody.get("completed").asText());
-//        assertEquals(active, responseBody.get("active").asText());
+        assertEquals(completed, responseBody.get("completed").asText());
+        assertEquals(active, responseBody.get("active").asText());
     }
 
     // ------ delete_project.feature -------

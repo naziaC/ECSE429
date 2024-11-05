@@ -12,7 +12,7 @@ Feature: Create a project
     And a new project is created with title "<title>", description "<description>", completed "<completed>", and active "<active>"
     Examples:
       | title    | completed | active | description  |
-      | ProjectD | false     | false  | DescriptionD |
+      | ProjectD | false     | true   | DescriptionD |
 
   Scenario Outline: Create a project with no fields (Alternate flow)
     When a user sends a POST request with title "<title>", description "<description>", completed "<completed>", and active "<active>"
@@ -20,7 +20,7 @@ Feature: Create a project
     And a new project is created with title "<title>", description "<description>", completed "<completed>", and active "<active>"
     Examples:
       | title | completed | active | description |
-      |       | false     | false  |             |
+      |       | false     | true   |             |
 
   Scenario Outline: Create a project with invalid field (Error flow)
     When a user sends a POST request with id "<project_id>"

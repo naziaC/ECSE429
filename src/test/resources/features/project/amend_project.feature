@@ -7,9 +7,9 @@ Feature: Amend a Project
     Given the REST API todo list Manager is running
     And the following projects exist in the system:
       | project_id | title    | completed | active | description  |
-      | 2          | ProjectA | false     | false  | DescriptionA |
+      | 2          | ProjectA | false     | true   | DescriptionA |
       | 3          | ProjectB | false     | true   | DescriptionB |
-      | 4          | ProjectC | false     | false  | DescriptionC |
+      | 4          | ProjectC | false     | true   | DescriptionC |
 
   Scenario Outline: Amend a project with POST (Normal flow)
     When a user sends a POST request with title "<title>" and description "<description>" for an existing project with ID "<project_id>"
@@ -17,7 +17,7 @@ Feature: Amend a Project
     And the project is updated with title "<title>" and description "<description>", with same completed "<completed>" and active "<active>" fields
     Examples:
       | project_id | title           | description         | completed | active |
-      | 2          | Amended Project | Amended description | false     | false  |
+      | 2          | Amended Project | Amended description | false     | true   |
 
   Scenario Outline: Amend a project with PUT (Alternate flow)
     When a user sends a PUT request with title "<title>" and description "<description>" for an existing project with ID "<project_id>"
@@ -26,6 +26,14 @@ Feature: Amend a Project
     Examples:
       | project_id | title           | description         | completed | active |
       | 3          | Amended Project | Amended description | false     | true   |
+
+  Scenario Outline: Amend a project with POST and duplicate title (Error flow)
+    When a user sends a POST request with title "<title>" and description "<description>" for an existing project with ID "<project_id>"
+    Then the status code 400 will be received
+    And the response body should contain the error message "Title <title> already exists for another project with ID <project_id>"
+    Examples:
+      | project_id | title     | description          |
+      | 4          | ProjectC  | Amended DescriptionC |
 
   Scenario Outline: Amend a project that does not exist (Error flow)
     When a user sends a POST request for an nonexistent project with ID "<project_id>"

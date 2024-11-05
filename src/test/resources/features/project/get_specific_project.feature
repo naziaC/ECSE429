@@ -7,9 +7,9 @@ Feature: Get a Specific Project
     Given the REST API todo list Manager is running
     And the following projects exist in the system:
       | project_id | title    | completed | active | description  |
-      | 2          | ProjectA | false     | false  | DescriptionA |
+      | 2          | ProjectA | false     | true   | DescriptionA |
       | 3          | ProjectB | false     | true   | DescriptionB |
-      | 4          | ProjectC | false     | false  | DescriptionC |
+      | 4          | ProjectC | false     | true   | DescriptionC |
 
   Scenario Outline: Get project by ID (Normal flow)
     When a user sends a GET request for an existing project with ID "<project_id>"
@@ -17,7 +17,7 @@ Feature: Get a Specific Project
     And the response body should contain project details with title "<title>", completed "<completed>", active "<active>", and description "<description>"
     Examples:
       | project_id | title     | completed | active | description   |
-      | 2          | ProjectA  | false     | false  | DescriptionA  |
+      | 2          | ProjectA  | false     | true   | DescriptionA  |
 
   Scenario Outline: Get project by title (Alternate flow)
     When a user sends a GET request for an existing project with title "<title>"

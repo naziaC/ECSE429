@@ -7,9 +7,9 @@ Feature: Delete a Project
     Given the REST API todo list Manager is running
     And the following projects exist in the system:
       | project_id | title    | completed | active | description  |
-      | 2          | ProjectA | false     | false  | DescriptionA |
+      | 2          | ProjectA | false     | true   | DescriptionA |
       | 3          | ProjectB | false     | true   | DescriptionB |
-      | 4          | ProjectC | false     | false  | DescriptionC |
+      | 4          | ProjectC | false     | true   | DescriptionC |
 
   Scenario Outline: Delete an active project by ID (Normal flow)
     When a user sends a DELETE request for a project with ID "<project_id>"
