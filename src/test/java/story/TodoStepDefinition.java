@@ -15,13 +15,6 @@ public class TodoStepDefinition {
 
     private HttpResponse<String> response;
 
-    // Background
-    // @Given("the REST API todo list Manager is running")
-    // public void the_rest_api_todo_list_manager_is_running() {
-    //     // Start application
-    //     assertTrue(CommonHelper.isApplicationRunning());
-    // }
-
     @Given("the following todos exist in the system:")
     public void the_following_todos_exist_in_the_system(io.cucumber.datatable.DataTable dataTable) {
         dataTable.asMaps().forEach(row -> {
@@ -79,20 +72,23 @@ public class TodoStepDefinition {
         assertTrue(responseBody.has("errorMessages"));
     }
 
-    // ------ amend_todo.feature ------- [does not work]
+    // ------ amend_todo.feature ------- 
 
+    // Scenario Outline: Amend a todo with POST (Normal flow)
     @When("a user sends a POST request with description {string} for an existing todo with ID {string}")
     public void a_user_sends_a_post_request_with_description_for_an_existing_todo_with_id(
         String description, String todoId) throws IOException, InterruptedException {
             response = HelperTodo.amendTodoPost(todoId, description);
     }
 
+    // Scenario Outline: Amend a todo with PUT (Alternate flow) --> fails 
     @When("a user sends a PUT request with description {string} for an existing todo with ID {string}")
     public void a_user_sends_a_put_request_with_description_for_an_existing_todo_with_id(
         String description, String todoId) throws IOException, InterruptedException {
             response = HelperTodo.amendTodoPut(todoId, description);
     }
 
+    // Scenario Outline: Amend a todo that does not exist (Error flow)
     @When("a user sends a POST request for an nonexistent todo with ID {string}")
     public void a_user_sends_a_post_request_for_an_nonexistent_todo_with_id(String todoId) throws IOException, InterruptedException {
         response = HelperTodo.amendTodoPost(todoId, "");
@@ -149,11 +145,14 @@ public class TodoStepDefinition {
     
     // ------ associate_todo_project.feature ------
 
+    // Scenario Outline: Create a task relationship between an existing todo and an existing project (Normal flow)
+    // Scenario Outline: Create a task relationship between a nonexisting todo and an existing project (Error flow)
     @When("a user sends a POST request to associate a todo id {string} with a project id {string}")
     public void a_user_sends_a_post_request_to_associate_a_todo_id_with_a_project_id(String todo_id, String project_id) throws IOException, InterruptedException {
         response = HelperTodo.associateTodoProject(todo_id, project_id);
     }
 
+    // Scenario Outline: Create a task relationship between an existing todo and a nonexistent project (Alternate flow)
     @When("a user sends a POST request to associate a todo id {string} with an empty body for the project ID")
     public void a_user_sends_a_post_request_to_associate_a_todo_id_with_an_empty_body_for_the_project_id(String todo_id) throws IOException, InterruptedException {
         response = HelperTodo.associateTodoProject(todo_id, "");
