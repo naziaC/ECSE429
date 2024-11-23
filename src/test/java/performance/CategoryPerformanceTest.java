@@ -1,5 +1,8 @@
 package performance;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.management.OperatingSystemMXBean;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -10,68 +13,61 @@ import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sun.management.OperatingSystemMXBean;
-import org.junit.jupiter.api.Test;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-public class TodosPerformanceTest extends PerformanceTestTools {
+public class CategoryPerformanceTest extends PerformanceTestTools {
     static final OperatingSystemMXBean osBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static final String OBJECT_NAME = "Todo";
+    private static final String BASE_URL = "http://localhost:4567/categories";
+    private static final String OBJECT_NAME = "Category";
 
-    public static HttpResponse<String> createTodo(String title, String description) throws IOException, InterruptedException{
-        Map<String, String> todoContent = new HashMap<>() {{
+    public static HttpResponse<String> createCategory(String title, String description) throws IOException, InterruptedException {
+        // Category to be created
+        Map<String, Object> category = new HashMap<>() {{
             put("title", title);
             put("description", description);
         }};
 
-        // Todo to be created
-        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(todoContent));
+        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(category));
 
         // Send the request
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:4567/todos"))
+                .uri(URI.create(BASE_URL))
                 .POST(requestBody)
                 .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        return response; 
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    public static HttpResponse<String> updateTodo(int id, String title, String description) throws IOException, InterruptedException{
-        Map<String, String> todoContent = new HashMap<>() {{
+    public static HttpResponse<String> updateCategory(int id, String title, String description) throws IOException, InterruptedException {
+        // Updated content of the category
+        Map<String, Object> category = new HashMap<>() {{
             put("title", title);
             put("description", description);
         }};
 
-        // Updated content of the todo
-        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(todoContent));
+        var requestBody = HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(category));
 
         // Send the request
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(String.format("http://localhost:4567/todos/%s", id)))
+                .uri(URI.create(String.format("%s/%d", BASE_URL, id)))
                 .PUT(requestBody)
                 .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        return response; 
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    public static HttpResponse<String> deleteTodo(int id) throws IOException, InterruptedException{
+    public static HttpResponse<String> deleteCategory(int id) throws IOException, InterruptedException {
         // Send the request
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(String.format("http://localhost:4567/todos/%s", id)))
+                .uri(URI.create(String.format("%s/%d", BASE_URL, id)))
                 .DELETE()
                 .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        return response; 
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
     @Test
-    public void testCreateTodosObjectPerformance() throws IOException, InterruptedException{
+    public void testCreateCategoryObjectPerformance() throws IOException, InterruptedException {
         double[] elapsedTime = new double[objectCount.length];
         double[] cpuUsage = new double[objectCount.length];
         double[] memoryUsage = new double[objectCount.length];
@@ -82,9 +78,9 @@ public class TodosPerformanceTest extends PerformanceTestTools {
         for (int i = 0; i < objectCount.length; i++){
             int currObjectCount = objectCount[i];
 
-            // Creating ObjectCount[i] todo objects
+            // Creating objectCount[i] category objects
             for (int j = 0; j < currObjectCount; j++){
-                createTodo("title", "description");
+                createCategory("title", "description");
             }
 
             // Time elapsed in ms
@@ -96,16 +92,16 @@ public class TodosPerformanceTest extends PerformanceTestTools {
         }
 
         // Writing Data
-        writeCSV("createTodoData.csv", OBJECT_NAME, elapsedTime, memoryUsage, cpuUsage);
+        writeCSV("createCategoryData.csv", OBJECT_NAME, elapsedTime, memoryUsage, cpuUsage);
     }
 
     @Test
-    public void testUpdateTodosObjectPerformance() throws IOException, InterruptedException{
-        // Iterating over the object count array (setting up existing Todos)
+    public void testUpdateCategoryObjectPerformance() throws IOException, InterruptedException {
+        // Iterating over the object count array (setting up existing categories)
         for (int currObjectCount : objectCount) {
-            // Creating ObjectCount[i] todo objects
+            // Creating objectCount[i] category objects
             for (int j = 0; j < currObjectCount; j++) {
-                createTodo("title", "description");
+                createCategory("title", "description");
             }
         }
 
@@ -120,9 +116,9 @@ public class TodosPerformanceTest extends PerformanceTestTools {
         for (int i = 0; i < objectCount.length; i++){
             int currObjectCount = objectCount[i];
 
-            // Updating ObjectCount[i] todo objects
+            // Updating objectCount[i] category objects
             for (int j = 0; j < currObjectCount; j++){
-                updateTodo(lastID+1+j, "newTitle", "newDescription");
+                updateCategory(lastID+1+j, "newTitle", "newDescription");
             }
 
             // Time elapsed in ms
@@ -136,16 +132,16 @@ public class TodosPerformanceTest extends PerformanceTestTools {
         }
 
         // Writing Data
-        writeCSV("updateTodoData.csv", OBJECT_NAME, elapsedTime, memoryUsage, cpuUsage);
+        writeCSV("updateCategoryData.csv", OBJECT_NAME, elapsedTime, memoryUsage, cpuUsage);
     }
 
     @Test
-    public void testDeleteTodosObjectPerformance() throws IOException, InterruptedException{
-        // Iterating over the object count array (setting up existing Todos)
+    public void testDeleteCategoryObjectPerformance() throws IOException, InterruptedException {
+        // Iterating over the object count array (setting up existing categories)
         for (int currObjectCount : objectCount) {
-            // Creating ObjectCount[i] todo objects
+            // Creating objectCount[i] category objects
             for (int j = 0; j < currObjectCount; j++) {
-                createTodo("title", "description");
+                createCategory("title", "description");
             }
         }
 
@@ -160,9 +156,9 @@ public class TodosPerformanceTest extends PerformanceTestTools {
         for (int i = 0; i < objectCount.length; i++){
             int currObjectCount = objectCount[i];
 
-            // Updating ObjectCount[i] todo objects
+            // Updating objectCount[i] category objects
             for (int j = 0; j < currObjectCount; j++){
-                deleteTodo(lastID+1+j);
+                deleteCategory(lastID+1+j);
             }
 
             // Time elapsed in ms
@@ -178,7 +174,6 @@ public class TodosPerformanceTest extends PerformanceTestTools {
         }
 
         // Writing Data
-        writeCSV("deleteTodoData.csv", OBJECT_NAME, elapsedTime, memoryUsage, cpuUsage);
+        writeCSV("deleteCategoryData.csv", OBJECT_NAME, elapsedTime, memoryUsage, cpuUsage);
     }
-
 }

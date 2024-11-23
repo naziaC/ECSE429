@@ -18,6 +18,7 @@ public class ProjectPerformanceTest extends PerformanceTestTools {
     static final OperatingSystemMXBean osBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final String OBJECT_NAME = "Project";
 
     public static HttpResponse<String> createProject(String title, Boolean active, Boolean completed, String description) throws IOException, InterruptedException{
         // Project to be created
@@ -95,17 +96,15 @@ public class ProjectPerformanceTest extends PerformanceTestTools {
         }
 
         // Writing Data
-        writeCSV("createProjectData.csv", elapsedTime, memoryUsage, cpuUsage);
+        writeCSV("createProjectData.csv", OBJECT_NAME, elapsedTime, memoryUsage, cpuUsage);
     }
 
     @Test
     public void testUpdateProjectObjectPerformance() throws IOException, InterruptedException{
         // Iterating over the object count array (setting up existing projects)
-        for (int i = 0; i < objectCount.length; i++){
-            int currObjectCount = objectCount[i];
-
+        for (int currObjectCount : objectCount) {
             // Creating objectCount[i] project objects
-            for (int j = 0; j < currObjectCount; j++){
+            for (int j = 0; j < currObjectCount; j++) {
                 createProject("title", false, false, "description");
             }
         }
@@ -121,7 +120,7 @@ public class ProjectPerformanceTest extends PerformanceTestTools {
         for (int i = 0; i < objectCount.length; i++){
             int currObjectCount = objectCount[i];
 
-            // Udpating objectCount[i] project objects
+            // Updating objectCount[i] project objects
             for (int j = 0; j < currObjectCount; j++){
                 updateProject(lastID+1+j, "newTitle", true, false, "newDescription");
             }
@@ -137,17 +136,15 @@ public class ProjectPerformanceTest extends PerformanceTestTools {
         }
 
         // Writing Data
-        writeCSV("updateProjectData.csv", elapsedTime, memoryUsage, cpuUsage);
+        writeCSV("updateProjectData.csv", OBJECT_NAME, elapsedTime, memoryUsage, cpuUsage);
     }
 
     @Test
     public void testDeleteProjectObjectPerformance() throws IOException, InterruptedException{
         // Iterating over the object count array (setting up existing projects)
-        for (int i = 0; i < objectCount.length; i++){
-            int currObjectCount = objectCount[i];
-
+        for (int currObjectCount : objectCount) {
             // Creating objectCount[i] project objects
-            for (int j = 0; j < currObjectCount; j++){
+            for (int j = 0; j < currObjectCount; j++) {
                 createProject("title", false, false, "description");
             }
         }
@@ -163,7 +160,7 @@ public class ProjectPerformanceTest extends PerformanceTestTools {
         for (int i = 0; i < objectCount.length; i++){
             int currObjectCount = objectCount[i];
 
-            // Udpating objectCount[i] project objects
+            // Updating objectCount[i] project objects
             for (int j = 0; j < currObjectCount; j++){
                 deleteProject(lastID+1+j);
             }
@@ -181,6 +178,6 @@ public class ProjectPerformanceTest extends PerformanceTestTools {
         }
 
         // Writing Data
-        writeCSV("deleteProjectData.csv", elapsedTime, memoryUsage, cpuUsage);
+        writeCSV("deleteProjectData.csv", OBJECT_NAME, elapsedTime, memoryUsage, cpuUsage);
     }
 }

@@ -49,11 +49,11 @@ public class PerformanceTestTools {
     }
 
     // Helper method to create csv file under /data
-    public static void writeCSV(String fileName, double[] elapsedTime, double[] memoryUsage, double[] cpuUsage){
+    public static void writeCSV(String fileName, String objectName, double[] elapsedTime, double[] memoryUsage, double[] cpuUsage){
         Path dataPath = Paths.get("src","test", "java", "performance", "data", fileName);
 
         try (FileWriter writer = new FileWriter(dataPath.toFile())){
-            String[] header = {"Number of Todo Objects", "Transaction Time (ms)", "Memory Usage (mb)", "CPU Usage (%)"};
+            String[] header = {String.format("Number of %s Objects", objectName), "Transaction Time (ms)", "Memory Usage (mb)", "CPU Usage (%)"};
             writer.append(String.join(",", header));
             writer.append('\n');
 
