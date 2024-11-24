@@ -9,11 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class PerformanceTestTools {
-//    static final int[] objectCount = {1, 5, 10, 25, 50, 75, 100, 150, 200, 350, 500, 750, 1000, 1250, 1500, 2000, 2500,
-//            3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000};
-//    static final int[] objectCount = {1, 5, 10, 25, 50, 75, 100, 200, 500, 1000, 1500, 2000,
-//            3000, 5000, 7000, 9000, 10000};
-    static final int[] objectCount = {1, 5, 10, 25, 50, 75, 100};
+    static final int[] objectCount = {1, 5, 10, 25, 50, 75, 100, 250, 500, 750, 1000};
 
     // (This was taken from unit/ApiTest.java)
     @BeforeAll
